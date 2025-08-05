@@ -1,20 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Upload, ChevronLeft, ChevronRight, FileText, Image, Video, File, X } from 'lucide-react';
-
-// New: Dedicated component for the drag-and-drop overlay
-const DragDropOverlay = ({ isDragging }) => (
-  <div
-    className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-900/80 backdrop-blur-sm transition-opacity duration-300
-      ${isDragging ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-  >
-    <div className="text-center text-green-400">
-      <Upload className="w-16 h-16 mx-auto mb-4 animate-bounce text-green-300" />
-      <p className="text-2xl font-bold tracking-wider">&gt; DROP FILES ANYWHERE</p>
-      <p className="text-md text-green-500">UPLOAD_INITIALIZING...</p>
-    </div>
-  </div>
-);
-
+import { Send, Upload, ChevronLeft, ChevronRight, FileText, Image, Video, File, X ,Mic, MicOff } from 'lucide-react';
 
 const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
@@ -26,18 +11,83 @@ const ChatComponent = () => {
   ]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [isDragging, setIsDragging] = useState(false); // This now controls the overlay
+  const [isListening, setIsListening] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
-  const dragCounter = useRef(0); // New: Counter for robust drag event handling
+
+  const [interimTranscript, setInterimTranscript] = useState('');
+
+  const recognitionRef = useRef(null);
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+useEffect(() => {
+  if (!SpeechRecognition) return;
+
+  if (!recognitionRef.current) {
+    recognitionRef.current = new SpeechRecognition();
+  }
+
+  const recognition = recognitionRef.current;
+
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'en-US';
+
+  recognition.onresult = (event) => {
+    let interim = '';
+    let final = '';
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        final += event.results[i][0].transcript;
+      } else {
+        interim += event.results[i][0].transcript;
+      }
+    }
+
+    if (final) {
+      setInputText(prev => (prev + ' ' + final).trim());
+      setInterimTranscript('');
+    } else {
+      setInterimTranscript(interim);
+    }
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Speech recognition error", event.error);
+    setIsListening(false);
+    recognition.stop();
+  };
+
+  recognition.onend = () => {
+    setIsListening(false);
+  };
+
+  return () => {
+    recognition.onresult = null;
+    recognition.onerror = null;
+    recognition.onend = null;
+  };
+}, []);
+
+const toggleListening = () => {
+  const recognition = recognitionRef.current;
+  if (!recognition) return;
+
+  if (isListening) {
+    recognition.stop();
+    setIsListening(false);
+  } else {
+    recognition.start();
+    setIsListening(true);
+    setInterimTranscript('');
+  }
+};
 
   const getFileIcon = (fileType) => {
     if (fileType.startsWith('image/')) return <Image className="w-4 h-4" />;
@@ -57,41 +107,26 @@ const ChatComponent = () => {
     setUploadedFiles(prev => [...prev, ...newFiles]);
   };
 
-  // --- Changed: Improved Drag and Drop Handlers ---
-  const handleDragEnter = (e) => {
+    const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    dragCounter.current++;
-    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
-      setIsDragging(true);
-    }
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dragCounter.current--;
-    if (dragCounter.current === 0) {
-      setIsDragging(false);
+    setIsDragging(false);
+    if (e.dataTransfer?.files?.length) {
+      handleFileUpload(e.dataTransfer.files);
     }
   };
 
   const handleDragOver = (e) => {
     e.preventDefault();
-    e.stopPropagation(); // Keep this to prevent default browser behavior
+    e.stopPropagation();
+    setIsDragging(true);
   };
-  
-  const handleDrop = (e) => {
+
+  const handleDragLeave = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
-    dragCounter.current = 0;
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFileUpload(e.dataTransfer.files);
-      e.dataTransfer.clearData();
-    }
   };
-  // --- End of Changes ---
 
   const removeFile = (fileId) => {
     setUploadedFiles(prev => prev.filter(file => file.id !== fileId));
@@ -160,16 +195,10 @@ const ChatComponent = () => {
   };
 
   return (
-    // Changed: Added the new drag-and-drop event handlers to the main container
     <div className="flex h-screen bg-gray-900" 
       onDrop={handleDrop}
       onDragOver={handleDragOver}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-    >
-      {/* New: The full-screen overlay is now rendered here */}
-      <DragDropOverlay isDragging={isDragging} />
-
+      onDragLeave={handleDragLeave}>
       {/* Sidebar */}
       <div className={`bg-gray-800 shadow-2xl transition-all duration-300 ${sidebarCollapsed ? 'w-0' : 'w-80'} border-r border-green-500/20`}>
         <div className={`h-full ${sidebarCollapsed ? 'hidden' : 'block'}`}>
@@ -190,7 +219,7 @@ const ChatComponent = () => {
       {/* Sidebar Toggle Button */}
       <button
         onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-green-400 to-green-600 text-black p-2 rounded-r-lg shadow-lg hover:from-green-300 hover:to-green-500 transition-all z-20" // Increased z-index
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-green-400 to-green-600 text-black p-2 rounded-r-lg shadow-lg hover:from-green-300 hover:to-green-500 transition-all z-10"
         style={{ left: sidebarCollapsed ? '0' : '320px' }}
       >
         {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -202,12 +231,26 @@ const ChatComponent = () => {
         <div className="bg-gray-800 shadow-lg border-b border-green-500/20 p-4">
           <h1 className="text-xl font-bold text-green-400 flex items-center space-x-2">
             <span>File Analysis Chat</span>
-            <span className="animate-pulse text-green-300">●</span>
           </h1>
         </div>
 
-        {/* Messages Area - Removed old drag-and-drop styling */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-900">
+        {/* Messages Area */}
+        <div 
+          className={`flex-1 overflow-y-auto p-4 space-y-4 bg-gray-900 ${isDragging ? 'bg-green-900/20 border-2 border-dashed border-green-400' : ''}`}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+        >
+          {isDragging && (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center text-green-400">
+                <Upload className="w-12 h-12 mx-auto mb-2 animate-bounce" />
+                <p className="text-lg font-bold">&gt; DROP FILES TO UPLOAD</p>
+                <p className="text-sm text-green-300">DRAG_AND_DROP.INITIATED</p>
+              </div>
+            </div>
+          )}
+          
           {messages.map(message => (
             <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg border ${
@@ -268,15 +311,25 @@ const ChatComponent = () => {
             <div className="flex-1 relative">
               <input
                 type="text"
-                value={inputText}
+                value={inputText + (interimTranscript ? ' ' + interimTranscript : '')}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                placeholder="Type your message or drop files to upload..."
+                placeholder="Type your message..."
                 className="w-full px-4 py-3 pr-20 bg-gray-700 border border-green-500/30 rounded-lg text-green-300 placeholder-green-500/50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
               />
               
               {/* Upload and Send icons inside input */}
               <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                <div>
+                    <button
+                    onClick={toggleListening}
+                    className={`p-1.5 ${isListening ? 'text-red-400' : 'text-green-400'} hover:bg-green-400/10 rounded transition-all`}
+                    title={isListening ? "Stop Listening" : "Start Voice Input"}
+                    >
+                    {isListening ? <MicOff className="w-4 h-4 animate-pulse" /> : <Mic className="w-4 h-4" />}
+                    </button>
+                </div>
+
                 <input
                   type="file"
                   ref={fileInputRef}
