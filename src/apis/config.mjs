@@ -1,0 +1,1 @@
+export const BASE_URL = 'http://localhost:3000'; // change to your backend base URL

@@ -75,13 +75,25 @@ const AuthPage = () => {
     
     // Simulate API call
     try {
+      let response;
+    
+    if (isLogin) {
+      // LOGIN API CALL
+      response = await axios.post('http://localhost:3000/api/login', {
+        email: formData.email,
+        password: formData.password
+      });
+      alert(`Welcome back! ${response.data.name}`);
+    } else {
+      // SIGNUP API CALL
+      response = await axios.post('http://localhost:3000/api/signup', {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      });
+      alert(`Account created successfully! Welcome, ${response.data.name}`);
+    }
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      if (isLogin) {
-        alert(`Welcome back! Logged in as ${formData.email}`);
-      } else {
-        alert(`Account created successfully! Welcome ${formData.name}!`);
-      }
       
       // Reset form
       setFormData({
