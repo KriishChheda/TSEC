@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Send, Upload, ChevronLeft, ChevronRight, FileText, Image, Video, File, X, Mic, MicOff, Loader2, Trash2 } from 'lucide-react';
 import axios from 'axios';
+import CHAT_APIS from '../apis/chatApis.mjs';
 // import { Link } from 'react-router-dom'; // Remove this import for now
 
 const ChatComponent = () => {
@@ -37,19 +38,12 @@ const ChatComponent = () => {
 
   const loadChatHistory = async () => {
     try {
-      const response = await axios.get('/api/chat/', {
-        headers: {
-          'Content-Type': 'application/json',
-          // Add any authentication headers if needed
-          // 'Authorization': `Bearer ${token}`,
-        },
-      });
-      
-      const history = response.data;
+      const response = await CHAT_APIS.getUserChats(sessionStorage.getItem('user_id') );
+      history = response.data || [];
+
       setChatHistory(history.map(chat => ({
         id: chat._id,
         title: chat.title,
-        description: chat.description,
         timestamp: new Date(chat.updated_at).toLocaleDateString(),
         updated_at: chat.updated_at
       })));
@@ -68,13 +62,12 @@ const ChatComponent = () => {
   const loadChat = async (chatId) => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`/api/chat/${chatId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          // Add any authentication headers if needed
-          // 'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await CHAT_APIS.getChatById(chatId);
+      
+      if (!response.data) {
+        console.error('Chat not found or empty');
+        return;
+      }
       
       const chatData = response.data;
       setCurrentChatId(chatId);
@@ -135,13 +128,7 @@ const ChatComponent = () => {
 
   const deleteChat = async (chatId) => {
     try {
-      await axios.delete(`/api/chat/${chatId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          // Add any authentication headers if needed
-          // 'Authorization': `Bearer ${token}`,
-        },
-      });
+      await CHAT_APIS.deleteChatById(chatId);
 
       // Remove chat from history
       setChatHistory(prev => prev.filter(chat => chat.id !== chatId));
@@ -166,17 +153,13 @@ const ChatComponent = () => {
       setIsLoading(true);
       
       // Make POST request to create new chat
-      const response = await axios.post('/api/chat', {
-        title: 'New Chat',
-        description: 'New conversation started',
-        // You can add any other initial data needed for chat creation
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          // Add any authentication headers if needed
-          // 'Authorization': `Bearer ${token}`,
-        },
-      });
+      const userId = sessionStorage.getItem('user_id');
+      const response = await CHAT_APIS.createNewChat(userId);
+
+      if (!response.data) {
+        console.error('Failed to create new chat: No data returned');
+        return;
+      }
 
       const newChat = response.data;
       
@@ -387,13 +370,7 @@ const ChatComponent = () => {
       // Always use the specific chat endpoint
       const endpoint = `/api/chat/${currentChatId}/prompt`;
       
-      const response = await axios.post(endpoint, requestData, {
-        headers: {
-          'Content-Type': 'application/json',
-          // Add any authentication headers if needed
-          // 'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await CHAT_APIS.addPromptToChat(currentChatId, requestData.prompt.text, currentFiles[0]?.file);
 
       const result = response.data;
       
