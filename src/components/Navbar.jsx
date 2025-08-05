@@ -1,105 +1,61 @@
-import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { FileText, Menu, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+const Navbar = () => {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setMenuOpen(!menuOpen);
   };
 
   return (
-    <nav className="bg-[#A37A5C] text-white shadow-lg">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-gray-900 border-b border-green-500/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold">Logo</h1>
+        <div className="flex justify-between items-center py-4">
+          {/* Logo */}
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-green-600 rounded-lg flex items-center justify-center">
+              <FileText className="w-5 h-5 text-black" />
+            </div>
+            <span className="text-xl font-bold text-green-400">FileChat AI</span>
           </div>
 
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="/" className="hover:text-amber-200 transition-colors duration-200">
-              Home
-            </a>
-            <a href="/chat" className="hover:text-amber-200 transition-colors duration-200">
-              Chat
-            </a>
-              {/*<Link to='/assignments' className="hover:text-amber-200 transition-colors duration-200">
-              Assignments
-            </Link>
-             <Link to='/test-platform' className="hover:text-amber-200 transition-colors duration-200">
-              Online Test
-            </Link>
-             <Link to='/Academics-page-subjects' className="hover:text-amber-200 transition-colors duration-200">
-              Academics
-            </Link>
-             <Link to='/reviews' className="hover:text-amber-200 transition-colors duration-200">
-              Reviews
-            </Link>
-             <Link to='/contact' className="hover:text-amber-200 transition-colors duration-200">
-              Contact Us
-            </Link>
-             <Link to='/elibrary' className="hover:text-amber-200 transition-colors duration-200">
-             E-Library
-            </Link>
-             <Link to='/q-paper' className="hover:text-amber-200 transition-colors duration-200">
-             Question papers
-            </Link> */}
-          </div>
-
-        {/* hidden by default and visible for screen sizes above medium */}
-          <div className="hidden md:block">
-            <button className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200"
-              onClick={() => navigate("/auth")}>
-              Log In
+            <Link to="/" className="text-gray-300 hover:text-green-400 transition-colors">Home</Link>
+            <a href="#features" className="text-gray-300 hover:text-green-400 transition-colors">Features</a>
+            <a href="#how-it-works" className="text-gray-300 hover:text-green-400 transition-colors">How it Works</a>
+            <button className="bg-gradient-to-r from-green-500 to-green-600 text-black px-6 py-2 rounded-lg font-semibold hover:from-green-400 hover:to-green-500 transition-all shadow-lg shadow-green-500/20" onClick={()=>navigate('/chat')}>
+              Get Started
             </button>
+            <Link to="/auth" className="text-gray-300 hover:text-green-400 transition-colors">Login</Link>
           </div>
 
+          {/* Mobile Menu Toggle Button */}
           <div className="md:hidden">
-            <button
-              onClick={toggleMenu}
-              className="text-white hover:text-amber-200 focus:outline-none focus:text-amber-200"
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            <button onClick={toggleMenu} className="text-green-400 hover:text-green-300 focus:outline-none">
+              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation Menu */}
-        {isMenuOpen && (
-        // md:hidden means its hidden by default for screen sizes above medium 
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-amber-900 rounded-lg mt-2">
-              <a
-                href="#"
-                className="block px-3 py-2 text-white hover:text-amber-200 hover:bg-amber-800 rounded-md transition-colors duration-200"
-              >
-                Home
-              </a>
-              {/* <a
-                href="#"
-                className="block px-3 py-2 text-white hover:text-amber-200 hover:bg-amber-800 rounded-md transition-colors duration-200"
-              >
-                Assignments
-              </a>
-              <a
-                href="#"
-                className="block px-3 py-2 text-white hover:text-amber-200 hover:bg-amber-800 rounded-md transition-colors duration-200"
-              >
-                Reviews
-              </a> */}
-              <div className="pt-2">
-                <button className="w-full bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200" onClick={() => navigate("/auth")}>
-                  Log In
-                </button>
-              </div>
-            </div>
+        {/* Mobile Dropdown Menu */}
+        {menuOpen && (
+          <div className="md:hidden flex flex-col space-y-4 pb-4">
+            <a href="#features" className="text-gray-300 hover:text-green-400 transition-colors">Features</a>
+            <a href="#how-it-works" className="text-gray-300 hover:text-green-400 transition-colors">How it Works</a>
+            <a href="#pricing" className="text-gray-300 hover:text-green-400 transition-colors">Pricing</a>
+            <button className="bg-gradient-to-r from-green-500 to-green-600 text-black px-6 py-2 rounded-lg font-semibold hover:from-green-400 hover:to-green-500 transition-all shadow-lg shadow-green-500/20">
+              Get Started
+            </button>
           </div>
         )}
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;

@@ -21,10 +21,9 @@ const ChatComponent = () => {
   const recognitionRef = useRef(null);
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // const scrollToBottom = () => {
+  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  // };
 
 useEffect(() => {
   if (!SpeechRecognition) return;
