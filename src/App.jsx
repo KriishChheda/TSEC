@@ -4,6 +4,7 @@ import AuthPage from './components/AuthPage'
 import Navbar from './components/Navbar';
 import ChatComponent from './components/ChatComponent';
 import LandingPage from './components/LandingPage';
+import Footer from './components/Footer';
 function App() {
   return (
     <>
@@ -13,6 +14,7 @@ function App() {
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/chat" element={<ChatComponent />} />
       </Routes>
+      <Footer />
     </>
   )
 }

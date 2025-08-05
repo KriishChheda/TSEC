@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, CheckCircle } from 'lucide-react';
 import image from '../assets/image.png';
+import { useNavigate } from 'react-router-dom';
 
 const AuthPage = () => {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true); // true -> login page renders , false -> signup page renders
   const [showPassword, setShowPassword] = useState(false); // true-> we'r showing the password , false -> we're not showing
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -109,7 +111,7 @@ const AuthPage = () => {
   };
 
   const goBack = () => {
-    // navigate("/");
+    navigate("/");
     console.log("Navigate back to home");
   };
 
@@ -128,12 +130,10 @@ const AuthPage = () => {
 
       {/* Left side - Image space */}
       <div className="hidden lg:flex lg:w-1/2 relative z-10">
-        {/* This is where you can add your images */}
         <div className="w-full h-full flex items-center justify-center bg-black bg-opacity-50">
           <div className="text-center p-8">
-            {/* Placeholder for your images */}
             <div className="w-96 h-96 bg-black bg-opacity-20 backdrop-blur-lg rounded-3xl flex items-center justify-center mb-6">
-              <div className="text-gray-600 text-lg font-medium">
+              <div className="text-black text-lg font-medium">
                 <img src={image} alt="description" />
               </div>
             </div>

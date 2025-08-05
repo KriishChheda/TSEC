@@ -4,7 +4,7 @@ import { Send, Upload, ChevronLeft, ChevronRight, FileText, Image, Video, File, 
 const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
-  const [chatHistory, setChatHistory] = useState([
+  const [chatHistory] = useState([
     { id: 1, title: 'Document Analysis', timestamp: '2024-01-15' },
     { id: 2, title: 'Image Processing', timestamp: '2024-01-14' },
     { id: 3, title: 'File Summary Chat', timestamp: '2024-01-13' }

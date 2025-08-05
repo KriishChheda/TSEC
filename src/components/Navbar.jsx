@@ -20,7 +20,7 @@ const Navbar = () => {
             <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-green-600 rounded-lg flex items-center justify-center">
               <FileText className="w-5 h-5 text-black" />
             </div>
-            <span className="text-xl font-bold text-green-400">FileChat AI</span>
+            <span className="text-xl font-bold text-green-400" onClick={()=>navigate('/')}>FileChat AI</span>
           </div>
 
           {/* Desktop Menu */}
