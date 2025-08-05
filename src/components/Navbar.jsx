@@ -22,10 +22,10 @@ function Navbar() {
             <a href="/" className="hover:text-amber-200 transition-colors duration-200">
               Home
             </a>
-             {/* <a href="/about-us" className="hover:text-amber-200 transition-colors duration-200">
-              About us
+            <a href="/chat" className="hover:text-amber-200 transition-colors duration-200">
+              Chat
             </a>
-             <Link to='/assignments' className="hover:text-amber-200 transition-colors duration-200">
+              {/*<Link to='/assignments' className="hover:text-amber-200 transition-colors duration-200">
               Assignments
             </Link>
              <Link to='/test-platform' className="hover:text-amber-200 transition-colors duration-200">
