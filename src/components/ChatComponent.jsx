@@ -5,9 +5,9 @@ const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [chatHistory, setChatHistory] = useState([
-    { id: 1, title: 'Previous Chat 1', timestamp: '2024-01-15' },
-    { id: 2, title: 'Document Analysis', timestamp: '2024-01-14' },
-    { id: 3, title: 'Image Summary', timestamp: '2024-01-13' }
+    { id: 1, title: 'Document Analysis', timestamp: '2024-01-15' },
+    { id: 2, title: 'Image Processing', timestamp: '2024-01-14' },
+    { id: 3, title: 'File Summary Chat', timestamp: '2024-01-13' }
   ]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -127,7 +127,6 @@ const ChatComponent = () => {
   return (
     <div className="flex h-screen bg-gray-900">
       {/* Sidebar */}
-      {/* Chat History */}
       <div className={`bg-gray-800 shadow-2xl transition-all duration-300 ${sidebarCollapsed ? 'w-0' : 'w-80'} border-r border-green-500/20`}>
         <div className={`h-full ${sidebarCollapsed ? 'hidden' : 'block'}`}>
           <div className="p-4 bg-gradient-to-r from-green-400 to-green-600 text-black">
@@ -158,9 +157,8 @@ const ChatComponent = () => {
         {/* Header */}
         <div className="bg-gray-800 shadow-lg border-b border-green-500/20 p-4">
           <h1 className="text-xl font-bold text-green-400 flex items-center space-x-2">
-            <span className="text-green-300">&gt;</span>
-            <span>NEURAL_CHAT.exe</span>
-            <span className="animate-pulse text-green-300">_</span>
+            <span>File Analysis Chat</span>
+            <span className="animate-pulse text-green-300">●</span>
           </h1>
         </div>
 
@@ -188,7 +186,7 @@ const ChatComponent = () => {
                   ? 'bg-gradient-to-r from-green-600 to-green-500 text-black border-green-400 shadow-lg shadow-green-500/20' 
                   : 'bg-gray-800 text-green-300 border-green-500/30 shadow-lg'
               }`}>
-                {message.text && <p className="text-sm font-mono">{message.text}</p>}
+                {message.text && <p className="text-sm">{message.text}</p>}
                 {message.files && message.files.length > 0 && (
                   <div className="mt-2 space-y-1">
                     {message.files.map(file => (
@@ -199,8 +197,8 @@ const ChatComponent = () => {
                     ))}
                   </div>
                 )}
-                <div className={`text-xs mt-1 font-mono ${message.type === 'user' ? 'text-black/70' : 'text-green-500'}`}>
-                  [{message.timestamp}]
+                <div className={`text-xs mt-1 ${message.type === 'user' ? 'text-black/70' : 'text-green-500'}`}>
+                  {message.timestamp}
                 </div>
               </div>
             </div>
@@ -211,15 +209,15 @@ const ChatComponent = () => {
         {/* File Upload Preview */}
         {uploadedFiles.length > 0 && (
           <div className="bg-gray-800 border-t border-green-500/20 p-3">
-            <div className="text-sm font-bold text-green-400 mb-2 font-mono">&gt; LOADED_FILES [{uploadedFiles.length}]</div>
+            <div className="text-sm font-bold text-green-400 mb-2">Uploaded Files ({uploadedFiles.length})</div>
             <div className="space-y-2 max-h-32 overflow-y-auto">
               {uploadedFiles.map(file => (
                 <div key={file.id} className="flex items-center justify-between bg-gray-700 p-2 rounded border border-green-500/20">
                   <div className="flex items-center space-x-2 flex-1 min-w-0">
                     <span className="text-green-400">{getFileIcon(file.type)}</span>
                     <div className="min-w-0 flex-1">
-                      <div className="text-sm font-mono text-green-300 truncate">{file.name}</div>
-                      <div className="text-xs text-green-500 font-mono">{formatFileSize(file.size)}</div>
+                      <div className="text-sm text-green-300 truncate">{file.name}</div>
+                      <div className="text-xs text-green-500">{formatFileSize(file.size)}</div>
                     </div>
                   </div>
                   <button
@@ -244,8 +242,8 @@ const ChatComponent = () => {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                placeholder="Enter command..."
-                className="w-full px-4 py-3 pr-20 bg-gray-700 border border-green-500/30 rounded-lg text-green-300 placeholder-green-500/50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 font-mono transition-all"
+                placeholder="Type your message..."
+                className="w-full px-4 py-3 pr-20 bg-gray-700 border border-green-500/30 rounded-lg text-green-300 placeholder-green-500/50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
               />
               
               {/* Upload and Send icons inside input */}
@@ -281,14 +279,14 @@ const ChatComponent = () => {
             <button
               onClick={summarizeFiles}
               disabled={uploadedFiles.length === 0}
-              className={`px-6 py-3 rounded-lg flex items-center space-x-2 transition-all font-mono font-bold ${
+              className={`px-6 py-3 rounded-lg flex items-center space-x-2 transition-all font-bold ${
                 uploadedFiles.length > 0
                   ? 'bg-gradient-to-r from-green-500 to-green-600 text-black hover:from-green-400 hover:to-green-500 shadow-lg shadow-green-500/20'
                   : 'bg-gray-700 text-gray-500 cursor-not-allowed border border-gray-600'
               }`}
             >
               <FileText className="w-4 h-4" />
-              <span>ANALYZE</span>
+              <span>Summarize</span>
             </button>
           </div>
         </div>
