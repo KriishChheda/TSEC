@@ -41,20 +41,24 @@ const ChatComponent = () => {
     setUploadedFiles(prev => [...prev, ...newFiles]);
   };
 
-  const handleDrop = (e) => {
+    const handleDrop = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(false);
-    const files = e.dataTransfer.files;
-    handleFileUpload(files);
+    if (e.dataTransfer?.files?.length) {
+      handleFileUpload(e.dataTransfer.files);
+    }
   };
 
   const handleDragOver = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
   };
 
   const handleDragLeave = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(false);
   };
 
@@ -125,7 +129,10 @@ const ChatComponent = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900">
+    <div className="flex h-screen bg-gray-900" 
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}>
       {/* Sidebar */}
       <div className={`bg-gray-800 shadow-2xl transition-all duration-300 ${sidebarCollapsed ? 'w-0' : 'w-80'} border-r border-green-500/20`}>
         <div className={`h-full ${sidebarCollapsed ? 'hidden' : 'block'}`}>
