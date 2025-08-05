@@ -195,7 +195,7 @@ const toggleListening = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900 mt-16" 
+    <div className="flex h-screen bg-gray-900 mt-28" 
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}>

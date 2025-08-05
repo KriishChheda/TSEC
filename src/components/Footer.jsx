@@ -1,5 +1,6 @@
 import React from 'react'
-import {FileText,ArrowRight} from 'lucide-react';
+import Symbol2 from '../assets/Symbol2.png';
+import {FileText} from 'lucide-react';
 // import { useNavigate } from 'react-router-dom';
 
 function Footer() {
@@ -12,10 +13,10 @@ function Footer() {
             {/* Brand Section */}
             <div className="md:col-span-1">
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-green-600 rounded-lg flex items-center justify-center">
-                  <FileText className="w-6 h-6 text-black" />
-                </div>
-                <span className="text-2xl font-bold text-green-400">Cogniscript</span>
+                <div className="w-20 h-20 rounded-lg flex items-center justify-center">
+                    <img src={Symbol2} className="w-full"/>
+                 </div>
+                <span className="text-xl font-bold text-green-400" onClick={()=>navigate('/')}>CogniScript</span>
               </div>
             </div>
           </div>

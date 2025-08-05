@@ -60,7 +60,7 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white overflow-hidden pt-10">
+    <div className="min-h-screen bg-gray-900 text-white overflow-hidden pt-14">
       {/* Animated Background */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900"></div>
