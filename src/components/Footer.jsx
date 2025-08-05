@@ -1,10 +1,10 @@
 import React from 'react'
 import Symbol2 from '../assets/Symbol2.png';
 import {FileText} from 'lucide-react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Footer() {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
   return (
     <div>
       <footer className="relative z-10 bg-gray-900 border-t border-green-500/20">
