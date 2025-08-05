@@ -199,16 +199,16 @@ const toggleListening = () => {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}>
       {/* Sidebar */}
-      <div className={`bg-gray-800 shadow-2xl transition-all duration-300 ${sidebarCollapsed ? 'w-0' : 'w-80'} border-r border-green-500/20`}>
+      <div className={`bg-gray-800 shadow-2xl transition-all duration-300 ${sidebarCollapsed ? 'w-0' : 'w-64 sm:w-72 md:w-80'} border-r border-green-500/20 ${sidebarCollapsed ? '' : 'hidden sm:block'}`}>
         <div className={`h-full ${sidebarCollapsed ? 'hidden' : 'block'}`}>
-          <div className="p-4 bg-gradient-to-r from-green-400 to-green-600 text-black">
-            <h2 className="text-lg font-bold">Chat History</h2>
+          <div className="p-3 sm:p-4 bg-gradient-to-r from-green-400 to-green-600 text-black">
+            <h2 className="text-base sm:text-lg font-bold">Chat History</h2>
           </div>
-          <div className="p-4 space-y-3 overflow-y-auto h-full">
+          <div className="p-3 sm:p-4 space-y-2 sm:space-y-3 overflow-y-auto h-full">
             {chatHistory.map(chat => (
-              <div key={chat.id} className="p-3 rounded-lg bg-gray-700 hover:bg-gradient-to-r hover:from-green-500/20 hover:to-green-400/20 border border-green-500/10 hover:border-green-400/30 cursor-pointer transition-all">
-                <div className="font-medium text-green-400">{chat.title}</div>
-                <div className="text-sm text-gray-400">{chat.timestamp}</div>
+              <div key={chat.id} className="p-2 sm:p-3 rounded-lg bg-gray-700 hover:bg-gradient-to-r hover:from-green-500/20 hover:to-green-400/20 border border-green-500/10 hover:border-green-400/30 cursor-pointer transition-all">
+                <div className="font-medium text-green-400 text-sm sm:text-base">{chat.title}</div>
+                <div className="text-xs sm:text-sm text-gray-400">{chat.timestamp}</div>
               </div>
             ))}
           </div>
@@ -218,52 +218,61 @@ const toggleListening = () => {
       {/* Sidebar Toggle Button */}
       <button
         onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-green-400 to-green-600 text-black p-2 rounded-r-lg shadow-lg hover:from-green-300 hover:to-green-500 transition-all z-10"
-        style={{ left: sidebarCollapsed ? '0' : '320px' }}
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-green-400 to-green-600 text-black p-1.5 sm:p-2 rounded-r-lg shadow-lg hover:from-green-300 hover:to-green-500 transition-all z-10 sm:hidden"
+        style={{ left: sidebarCollapsed ? '0' : '256px' }}
+      >
+        {sidebarCollapsed ? <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" /> : <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4" />}
+      </button>
+
+      {/* Desktop Sidebar Toggle */}
+      <button
+        onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-green-400 to-green-600 text-black p-2 rounded-r-lg shadow-lg hover:from-green-300 hover:to-green-500 transition-all z-10 hidden sm:block"
+        style={{ left: sidebarCollapsed ? '0' : '288px' }}
       >
         {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
       </button>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="bg-gray-800 shadow-lg border-b border-green-500/20 p-4">
-          <h1 className="text-xl font-bold text-green-400 flex items-center space-x-2">
+        <div className="bg-gray-800 shadow-lg border-b border-green-500/20 p-3 sm:p-4">
+          <h1 className="text-lg sm:text-xl font-bold text-green-400 flex items-center space-x-2">
             <span>File Analysis Chat</span>
           </h1>
         </div>
 
         {/* Messages Area */}
         <div 
-          className={`flex-1 overflow-y-auto p-4 space-y-4 bg-gray-900 ${isDragging ? 'bg-green-900/20 border-2 border-dashed border-green-400' : ''}`}
+          className={`flex-1 overflow-y-auto p-2 sm:p-4 space-y-3 sm:space-y-4 bg-gray-900 ${isDragging ? 'bg-green-900/20 border-2 border-dashed border-green-400' : ''}`}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
         >
           {isDragging && (
             <div className="flex items-center justify-center h-full">
-              <div className="text-center text-green-400">
-                <Upload className="w-12 h-12 mx-auto mb-2 animate-bounce" />
-                <p className="text-lg font-bold">&gt; DROP FILES TO UPLOAD</p>
-                <p className="text-sm text-green-300">DRAG_AND_DROP.INITIATED</p>
+              <div className="text-center text-green-400 px-4">
+                <Upload className="w-8 h-8 sm:w-10 md:w-12 sm:h-10 md:h-12 mx-auto mb-2 animate-bounce" />
+                <p className="text-base sm:text-lg font-bold">&gt; DROP FILES TO UPLOAD</p>
+                <p className="text-xs sm:text-sm text-green-300">DRAG_AND_DROP.INITIATED</p>
               </div>
             </div>
           )}
           
           {messages.map(message => (
             <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg border ${
+              <div className={`max-w-[85%] sm:max-w-xs lg:max-w-md px-3 sm:px-4 py-2 rounded-lg border ${
                 message.type === 'user' 
                   ? 'bg-gradient-to-r from-green-600 to-green-500 text-black border-green-400 shadow-lg shadow-green-500/20' 
                   : 'bg-gray-800 text-green-300 border-green-500/30 shadow-lg'
               }`}>
-                {message.text && <p className="text-sm">{message.text}</p>}
+                {message.text && <p className="text-xs sm:text-sm break-words">{message.text}</p>}
                 {message.files && message.files.length > 0 && (
                   <div className="mt-2 space-y-1">
                     {message.files.map(file => (
                       <div key={file.id} className="flex items-center space-x-2 text-xs bg-black/30 rounded p-1 border border-green-500/20">
                         {getFileIcon(file.type)}
-                        <span className="truncate text-green-300">{file.name}</span>
+                        <span className="truncate text-green-300 min-w-0">{file.name}</span>
                       </div>
                     ))}
                   </div>
@@ -279,23 +288,23 @@ const toggleListening = () => {
 
         {/* File Upload Preview */}
         {uploadedFiles.length > 0 && (
-          <div className="bg-gray-800 border-t border-green-500/20 p-3">
-            <div className="text-sm font-bold text-green-400 mb-2">Uploaded Files ({uploadedFiles.length})</div>
-            <div className="space-y-2 max-h-32 overflow-y-auto">
+          <div className="bg-gray-800 border-t border-green-500/20 p-2 sm:p-3">
+            <div className="text-xs sm:text-sm font-bold text-green-400 mb-2">Uploaded Files ({uploadedFiles.length})</div>
+            <div className="space-y-2 max-h-24 sm:max-h-32 overflow-y-auto">
               {uploadedFiles.map(file => (
                 <div key={file.id} className="flex items-center justify-between bg-gray-700 p-2 rounded border border-green-500/20">
                   <div className="flex items-center space-x-2 flex-1 min-w-0">
-                    <span className="text-green-400">{getFileIcon(file.type)}</span>
+                    <span className="text-green-400 flex-shrink-0">{getFileIcon(file.type)}</span>
                     <div className="min-w-0 flex-1">
-                      <div className="text-sm text-green-300 truncate">{file.name}</div>
+                      <div className="text-xs sm:text-sm text-green-300 truncate">{file.name}</div>
                       <div className="text-xs text-green-500">{formatFileSize(file.size)}</div>
                     </div>
                   </div>
                   <button
                     onClick={() => removeFile(file.id)}
-                    className="text-red-400 hover:text-red-300 ml-2 hover:bg-red-400/10 p-1 rounded transition-all"
+                    className="text-red-400 hover:text-red-300 ml-2 hover:bg-red-400/10 p-1 rounded transition-all flex-shrink-0"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-3 h-3 sm:w-4 sm:h-4" />
                   </button>
                 </div>
               ))}
@@ -304,8 +313,8 @@ const toggleListening = () => {
         )}
 
         {/* Input Area */}
-        <div className="bg-gray-800 border-t border-green-500/20 p-4">
-          <div className="flex space-x-3">
+        <div className="bg-gray-800 border-t border-green-500/20 p-2 sm:p-4">
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
             {/* Search Input with integrated icons */}
             <div className="flex-1 relative">
               <input
@@ -314,18 +323,18 @@ const toggleListening = () => {
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                 placeholder="Type your message..."
-                className="w-full px-4 py-3 pr-20 bg-gray-700 border border-green-500/30 rounded-lg text-green-300 placeholder-green-500/50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-16 sm:pr-20 bg-gray-700 border border-green-500/30 rounded-lg text-green-300 placeholder-green-500/50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all text-sm sm:text-base"
               />
               
               {/* Upload and Send icons inside input */}
-              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+              <div className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-0.5 sm:space-x-1">
                 <div>
                     <button
                     onClick={toggleListening}
-                    className={`p-1.5 ${isListening ? 'text-red-400' : 'text-green-400'} hover:bg-green-400/10 rounded transition-all`}
+                    className={`p-1 sm:p-1.5 ${isListening ? 'text-red-400' : 'text-green-400'} hover:bg-green-400/10 rounded transition-all`}
                     title={isListening ? "Stop Listening" : "Start Voice Input"}
                     >
-                    {isListening ? <MicOff className="w-4 h-4 animate-pulse" /> : <Mic className="w-4 h-4" />}
+                    {isListening ? <MicOff className="w-3 h-3 sm:w-4 sm:h-4 animate-pulse" /> : <Mic className="w-3 h-3 sm:w-4 sm:h-4" />}
                     </button>
                 </div>
 
@@ -340,18 +349,18 @@ const toggleListening = () => {
                 
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-1.5 text-green-400 hover:text-green-300 hover:bg-green-400/10 rounded transition-all"
+                  className="p-1 sm:p-1.5 text-green-400 hover:text-green-300 hover:bg-green-400/10 rounded transition-all"
                   title="Upload Files"
                 >
-                  <Upload className="w-4 h-4" />
+                  <Upload className="w-3 h-3 sm:w-4 sm:h-4" />
                 </button>
                 
                 <button
                   onClick={sendMessage}
-                  className="p-1.5 text-green-400 hover:text-green-300 hover:bg-green-400/10 rounded transition-all"
+                  className="p-1 sm:p-1.5 text-green-400 hover:text-green-300 hover:bg-green-400/10 rounded transition-all"
                   title="Send Message"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-3 h-3 sm:w-4 sm:h-4" />
                 </button>
               </div>
             </div>
@@ -360,14 +369,15 @@ const toggleListening = () => {
             <button
               onClick={summarizeFiles}
               disabled={uploadedFiles.length === 0}
-              className={`px-6 py-3 rounded-lg flex items-center space-x-2 transition-all font-bold ${
+              className={`px-3 sm:px-6 py-2 sm:py-3 rounded-lg flex items-center justify-center space-x-1 sm:space-x-2 transition-all font-bold text-sm sm:text-base whitespace-nowrap ${
                 uploadedFiles.length > 0
                   ? 'bg-gradient-to-r from-green-500 to-green-600 text-black hover:from-green-400 hover:to-green-500 shadow-lg shadow-green-500/20'
                   : 'bg-gray-700 text-gray-500 cursor-not-allowed border border-gray-600'
               }`}
             >
-              <FileText className="w-4 h-4" />
-              <span>Summarize</span>
+              <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Summarize</span>
+              <span className="sm:hidden">Sum</span>
             </button>
           </div>
         </div>
