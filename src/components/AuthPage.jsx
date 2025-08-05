@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, CheckCircle } from 'lucide-react';
 import image from '../assets/image.png';
 import { useNavigate } from 'react-router-dom';
+import AUTH_APIS from '../apis/authapi.mjs';
+
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -74,14 +76,29 @@ const AuthPage = () => {
     
     // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      let response;
       if (isLogin) {
-        alert(`Welcome back! Logged in as ${formData.email}`);
+        response = await AUTH_APIS.loginUser({
+          email: formData.email,
+          password: formData.password
+        });
+        console.log(response);
+        alert(`Welcome back! ${response.data.username}`);
+
+        sessionStorage.setItem('email', response.data.email);
+        sessionStorage.setItem('username', response.data.username);
+        sessionStorage.setItem('user_id', response.data.user_id);
+        navigate('/chat'); // Redirect to chat after login
       } else {
-        alert(`Account created successfully! Welcome ${formData.name}!`);
+        response = await AUTH_APIS.signupUser({
+          username: formData.name,
+          email: formData.email,
+          password: formData.password
+        });
+         console.log(response);
+        alert(`Account created! Welcome, ${response.data.username}`);
       }
-      
+
       // Reset form
       setFormData({
         name: '',

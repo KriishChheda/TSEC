@@ -20,7 +20,7 @@ const Navbar = () => {
             <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-green-600 rounded-lg flex items-center justify-center">
               <FileText className="w-5 h-5 text-black" />
             </div>
-            <span className="text-xl font-bold text-green-400" onClick={()=>navigate('/')}>FileChat AI</span>
+            <span className="text-xl font-bold text-green-400" onClick={()=>navigate('/')}>CogniScript</span>
           </div>
 
           {/* Desktop Menu */}
@@ -33,6 +33,30 @@ const Navbar = () => {
             </button>
             <Link to="/auth" className="text-gray-300 hover:text-green-400 transition-colors">Login</Link>
           </div>
+
+          {sessionStorage.getItem('username') && (
+            <div className="relative group">
+              <div className="w-9 h-9 rounded-full bg-green-500 text-black font-bold flex items-center justify-center cursor-pointer">
+                {sessionStorage.getItem('username')[0].toUpperCase()}
+              </div>
+              <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50">
+                <div className="px-4 py-2 text-sm text-gray-800 border-b">
+                  Welcome {sessionStorage.getItem('username')}
+                </div>
+                <button
+                  onClick={() => {
+                    sessionStorage.clear();
+                    navigate('/');
+                    window.location.reload();
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          )}
+
 
           {/* Mobile Menu Toggle Button */}
           <div className="md:hidden">
@@ -47,7 +71,6 @@ const Navbar = () => {
           <div className="md:hidden flex flex-col space-y-4 pb-4">
             <a href="#features" className="text-gray-300 hover:text-green-400 transition-colors">Features</a>
             <a href="#how-it-works" className="text-gray-300 hover:text-green-400 transition-colors">How it Works</a>
-            <a href="#pricing" className="text-gray-300 hover:text-green-400 transition-colors">Pricing</a>
             <button className="bg-gradient-to-r from-green-500 to-green-600 text-black px-6 py-2 rounded-lg font-semibold hover:from-green-400 hover:to-green-500 transition-all shadow-lg shadow-green-500/20">
               Get Started
             </button>
