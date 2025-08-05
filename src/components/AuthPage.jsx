@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, CheckCircle } from 'lucide-react';
 import image from '../assets/image.png';
+import { useNavigate } from 'react-router-dom';
+import AUTH_APIS from '../apis/authapi.mjs';
+
 
 const AuthPage = () => {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true); // true -> login page renders , false -> signup page renders
   const [showPassword, setShowPassword] = useState(false); // true-> we'r showing the password , false -> we're not showing
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -73,6 +77,7 @@ const AuthPage = () => {
     // Simulate API call
     try {
       let response;
+<<<<<<< HEAD
     
     if (isLogin) {
       // LOGIN API CALL
@@ -92,6 +97,30 @@ const AuthPage = () => {
     }
       await new Promise(resolve => setTimeout(resolve, 2000));
       
+=======
+      if (isLogin) {
+        response = await AUTH_APIS.loginUser({
+          email: formData.email,
+          password: formData.password
+        });
+        console.log(response);
+        alert(`Welcome back! ${response.data.username}`);
+
+        sessionStorage.setItem('email', response.data.email);
+        sessionStorage.setItem('username', response.data.username);
+        sessionStorage.setItem('user_id', response.data.user_id);
+        navigate('/chat'); // Redirect to chat after login
+      } else {
+        response = await AUTH_APIS.signupUser({
+          username: formData.name,
+          email: formData.email,
+          password: formData.password
+        });
+         console.log(response);
+        alert(`Account created! Welcome, ${response.data.username}`);
+      }
+
+>>>>>>> 1cd2102669cccaad6c76db0478eb979d2e88bae9
       // Reset form
       setFormData({
         name: '',
@@ -121,12 +150,12 @@ const AuthPage = () => {
   };
 
   const goBack = () => {
-    // navigate("/");
+    navigate("/");
     console.log("Navigate back to home");
   };
 
   return (
-    <div className="min-h-screen flex relative overflow-hidden mt-14">
+    <div className="min-h-screen flex relative overflow-hidden mt-24">
       {/* Background overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-20"></div>
 
@@ -140,12 +169,10 @@ const AuthPage = () => {
 
       {/* Left side - Image space */}
       <div className="hidden lg:flex lg:w-1/2 relative z-10">
-        {/* This is where you can add your images */}
         <div className="w-full h-full flex items-center justify-center bg-black bg-opacity-50">
           <div className="text-center p-8">
-            {/* Placeholder for your images */}
             <div className="w-96 h-96 bg-black bg-opacity-20 backdrop-blur-lg rounded-3xl flex items-center justify-center mb-6">
-              <div className="text-gray-600 text-lg font-medium">
+              <div className="text-black text-lg font-medium">
                 <img src={image} alt="description" />
               </div>
             </div>
@@ -340,12 +367,12 @@ const AuthPage = () => {
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-gray-300"></div>
                 </div>
-                <div className="relative flex justify-center text-sm">
+                {/* <div className="relative flex justify-center text-sm">
                   <span className="px-2 bg-white text-gray-500">Or continue with</span>
-                </div>
+                </div> */}
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-3">
+              {/* <div className="mt-4 grid grid-cols-2 gap-3">
                 <button className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -361,7 +388,7 @@ const AuthPage = () => {
                   </svg>
                   Facebook
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

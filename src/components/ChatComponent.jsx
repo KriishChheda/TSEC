@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Upload, ChevronLeft, ChevronRight, FileText, Image, Video, File, X ,Mic, MicOff } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
@@ -194,7 +195,7 @@ const toggleListening = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900" 
+    <div className="flex h-screen bg-gray-900 mt-28" 
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}>
@@ -211,6 +212,15 @@ const toggleListening = () => {
                 <div className="text-xs sm:text-sm text-gray-400">{chat.timestamp}</div>
               </div>
             ))}
+            
+            <br />
+            <Link 
+              to="/profchat" 
+              className="block p-3 rounded-lg bg-gray-700 hover:bg-gradient-to-r hover:from-green-500/20 hover:to-green-400/20 border border-green-500/10 hover:border-green-400/30 cursor-pointer transition-all"
+            >
+              <div className="font-medium text-green-400">Professional Chat</div>
+              <div className="text-sm text-gray-400">Start a new professional conversation</div>
+            </Link>
           </div>
         </div>
       </div>

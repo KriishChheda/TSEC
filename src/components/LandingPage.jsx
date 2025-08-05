@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Upload, FileText, Image, Video, File, MessageSquare, Zap, Shield, ArrowRight, Play, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
+import image2 from '../assets/image2.png';
 const LandingPage = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState({});
-//   const [activeFeature, setActiveFeature] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -56,19 +55,12 @@ const LandingPage = () => {
   const supportedFormats = [
     { icon: <Image className="w-5 h-5" />, name: "Images", formats: "JPG, PNG, GIF, SVG" },
     { icon: <Video className="w-5 h-5" />, name: "Videos", formats: "MP4, AVI, MOV, MKV" },
-    { icon: <FileText className="w-5 h-5" />, name: "Documents", formats: "PDF, DOC, TXT, MD" },
+    { icon: <FileText className="w-5 h-5" />, name: "Documents", formats: "PDF, DOC, TXT" },
     { icon: <File className="w-5 h-5" />, name: "Archives", formats: "ZIP" }
   ];
 
-  const stats = [
-    { number: "10M+", label: "Files Processed" },
-    { number: "99.9%", label: "Accuracy Rate" },
-    { number: "5s", label: "Average Analysis Time" },
-    { number: "50+", label: "File Formats Supported" }
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-900 text-white overflow-hidden ">
+    <div className="min-h-screen bg-gray-900 text-white overflow-hidden pt-14">
       {/* Animated Background */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900"></div>
@@ -109,7 +101,7 @@ const LandingPage = () => {
                 images, and videos like never before.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <button className="group bg-gradient-to-r from-green-500 to-green-600 text-black px-8 py-4 rounded-lg font-bold text-lg hover:from-green-400 hover:to-green-500 transition-all shadow-lg shadow-green-500/20 flex items-center space-x-2" onClick={()=> navigate('/chat')}>
+                <button className="group bg-gradient-to-r from-green-500 to-green-600 text-black px-8 py-4 rounded-lg font-bold text-lg hover:from-green-400 hover:to-green-500 transition-all shadow-lg shadow-green-500/20 flex items-center space-x-2" onClick={() => navigate('/chat')}>
                   <span>Start Analyzing</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -119,26 +111,12 @@ const LandingPage = () => {
                 </button>
               </div>
             </div>
-
-            {/* Stats */}
-            <div 
-              className={`grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 transition-all duration-1000 delay-300 ${isVisible.stats ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
-              id="stats"
-              data-animate
-            >
-              {stats.map((stat, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-green-400 mb-2">{stat.number}</div>
-                  <div className="text-gray-400">{stat.label}</div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="relative z-10 py-20 bg-gray-800/30">
+      <section id="features" className="relative z-10 py-5 bg-gray-800/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div 
             className={`text-center mb-16 transition-all duration-1000 ${isVisible.featuresTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
@@ -173,8 +151,76 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* About Us Section */}
+      <section id="about" className="relative z-10 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Column - Content */}
+            <div 
+              className={`transition-all duration-1000 ${isVisible.aboutContent ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
+              id="aboutContent"
+              data-animate
+            >
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                About <span className="text-green-400">Our Mission</span>
+              </h2>
+              <p className="text-xl text-gray-300 mb-6 leading-relaxed">
+                We believe that every file contains valuable insights waiting to be discovered. 
+                Our AI-powered platform breaks down the barriers between you and your data, 
+                making complex analysis accessible to everyone.
+              </p>
+              <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+                Founded by a team of AI researchers and data scientists, we're passionate about 
+                democratizing artificial intelligence and helping individuals and businesses 
+                unlock the hidden potential in their documents, images, and multimedia files.
+              </p>
+              
+              {/* Key Values */}
+              <div className="space-y-4">
+                {[
+                  { title: "Innovation First", desc: "Cutting-edge AI technology that evolves with your needs" },
+                  { title: "Privacy Focused", desc: "Your data security and privacy are our top priorities" },
+                  { title: "User-Centric", desc: "Designed for simplicity without sacrificing powerful features" }
+                ].map((value, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <Check className="w-4 h-4 text-black" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white mb-1">{value.title}</h4>
+                      <p className="text-gray-400 text-sm">{value.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Column - Visual Element */}
+            <div 
+              className={`transition-all duration-1000 delay-300 ${isVisible.aboutVisual ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}
+              id="aboutVisual"
+              data-animate
+            >
+              <div className="relative">
+                {/* Main Card */}
+                <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-green-500/20 shadow-2xl">
+                  <div className="flex items-center space-x-4 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                      <Zap className="w-6 h-6 text-black" />
+                    </div>
+                    <div>
+                        <img src={image2} alt="" />
+                    </div>
+                  </div>         
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Supported Formats */}
-      <section className="relative z-10 py-20">
+      <section className="relative z-10 py-20 bg-gray-800/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div 
             className={`text-center mb-16 transition-all duration-1000 ${isVisible.formatsTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
@@ -210,7 +256,7 @@ const LandingPage = () => {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="relative z-10 py-20 bg-gray-800/30">
+      <section id="how-it-works" className="relative z-10 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div 
             className={`text-center mb-16 transition-all duration-1000 ${isVisible.howTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
@@ -247,7 +293,7 @@ const LandingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="relative z-10 py-20">
+      <section className="relative z-10 py-20 bg-gray-800/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div 
             className={`transition-all duration-1000 ${isVisible.cta ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
@@ -260,27 +306,13 @@ const LandingPage = () => {
             <p className="text-xl text-gray-300 mb-8">
               Join thousands of users who are already getting insights from their files with AI
             </p>
-            <button className="group bg-gradient-to-r from-green-500 to-green-600 text-black px-10 py-4 rounded-lg font-bold text-xl hover:from-green-400 hover:to-green-500 transition-all shadow-lg shadow-green-500/20 flex items-center space-x-2 mx-auto" onClick={()=> navigate('/chat')}>
+            <button className="group bg-gradient-to-r from-green-500 to-green-600 text-black px-10 py-4 rounded-lg font-bold text-xl hover:from-green-400 hover:to-green-500 transition-all shadow-lg shadow-green-500/20 flex items-center space-x-2 mx-auto" onClick={() => navigate('/chat')}>
               <span>Get Started Free</span>
               <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="relative z-10 bg-gray-800 border-t border-green-500/20 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-green-600 rounded-lg flex items-center justify-center">
-                <FileText className="w-5 h-5 text-black" />
-              </div>
-              <span className="text-xl font-bold text-green-400">FileChat AI</span>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
