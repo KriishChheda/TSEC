@@ -77,27 +77,6 @@ const AuthPage = () => {
     // Simulate API call
     try {
       let response;
-<<<<<<< HEAD
-    
-    if (isLogin) {
-      // LOGIN API CALL
-      response = await axios.post('http://localhost:3000/api/login', {
-        email: formData.email,
-        password: formData.password
-      });
-      alert(`Welcome back! ${response.data.name}`);
-    } else {
-      // SIGNUP API CALL
-      response = await axios.post('http://localhost:3000/api/signup', {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password
-      });
-      alert(`Account created successfully! Welcome, ${response.data.name}`);
-    }
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-=======
       if (isLogin) {
         response = await AUTH_APIS.loginUser({
           email: formData.email,
@@ -120,7 +99,6 @@ const AuthPage = () => {
         alert(`Account created! Welcome, ${response.data.username}`);
       }
 
->>>>>>> 1cd2102669cccaad6c76db0478eb979d2e88bae9
       // Reset form
       setFormData({
         name: '',
