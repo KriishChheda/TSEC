@@ -1,6 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Upload, ChevronLeft, ChevronRight, FileText, Image, Video, File, X } from 'lucide-react';
 
+// New: Dedicated component for the drag-and-drop overlay
+const DragDropOverlay = ({ isDragging }) => (
+  <div
+    className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-900/80 backdrop-blur-sm transition-opacity duration-300
+      ${isDragging ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+  >
+    <div className="text-center text-green-400">
+      <Upload className="w-16 h-16 mx-auto mb-4 animate-bounce text-green-300" />
+      <p className="text-2xl font-bold tracking-wider">&gt; DROP FILES ANYWHERE</p>
+      <p className="text-md text-green-500">UPLOAD_INITIALIZING...</p>
+    </div>
+  </div>
+);
+
+
 const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
@@ -11,9 +26,10 @@ const ChatComponent = () => {
   ]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [isDragging, setIsDragging] = useState(false);
+  const [isDragging, setIsDragging] = useState(false); // This now controls the overlay
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const dragCounter = useRef(0); // New: Counter for robust drag event handling
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -41,26 +57,41 @@ const ChatComponent = () => {
     setUploadedFiles(prev => [...prev, ...newFiles]);
   };
 
-    const handleDrop = (e) => {
+  // --- Changed: Improved Drag and Drop Handlers ---
+  const handleDragEnter = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsDragging(false);
-    if (e.dataTransfer?.files?.length) {
-      handleFileUpload(e.dataTransfer.files);
+    dragCounter.current++;
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      setIsDragging(true);
     }
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
   };
 
   const handleDragLeave = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsDragging(false);
+    dragCounter.current--;
+    if (dragCounter.current === 0) {
+      setIsDragging(false);
+    }
   };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation(); // Keep this to prevent default browser behavior
+  };
+  
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    dragCounter.current = 0;
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileUpload(e.dataTransfer.files);
+      e.dataTransfer.clearData();
+    }
+  };
+  // --- End of Changes ---
 
   const removeFile = (fileId) => {
     setUploadedFiles(prev => prev.filter(file => file.id !== fileId));
@@ -129,10 +160,16 @@ const ChatComponent = () => {
   };
 
   return (
+    // Changed: Added the new drag-and-drop event handlers to the main container
     <div className="flex h-screen bg-gray-900" 
       onDrop={handleDrop}
       onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}>
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+    >
+      {/* New: The full-screen overlay is now rendered here */}
+      <DragDropOverlay isDragging={isDragging} />
+
       {/* Sidebar */}
       <div className={`bg-gray-800 shadow-2xl transition-all duration-300 ${sidebarCollapsed ? 'w-0' : 'w-80'} border-r border-green-500/20`}>
         <div className={`h-full ${sidebarCollapsed ? 'hidden' : 'block'}`}>
@@ -153,7 +190,7 @@ const ChatComponent = () => {
       {/* Sidebar Toggle Button */}
       <button
         onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-green-400 to-green-600 text-black p-2 rounded-r-lg shadow-lg hover:from-green-300 hover:to-green-500 transition-all z-10"
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-green-400 to-green-600 text-black p-2 rounded-r-lg shadow-lg hover:from-green-300 hover:to-green-500 transition-all z-20" // Increased z-index
         style={{ left: sidebarCollapsed ? '0' : '320px' }}
       >
         {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -169,23 +206,8 @@ const ChatComponent = () => {
           </h1>
         </div>
 
-        {/* Messages Area */}
-        <div 
-          className={`flex-1 overflow-y-auto p-4 space-y-4 bg-gray-900 ${isDragging ? 'bg-green-900/20 border-2 border-dashed border-green-400' : ''}`}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-        >
-          {isDragging && (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center text-green-400">
-                <Upload className="w-12 h-12 mx-auto mb-2 animate-bounce" />
-                <p className="text-lg font-bold">&gt; DROP FILES TO UPLOAD</p>
-                <p className="text-sm text-green-300">DRAG_AND_DROP.INITIATED</p>
-              </div>
-            </div>
-          )}
-          
+        {/* Messages Area - Removed old drag-and-drop styling */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-900">
           {messages.map(message => (
             <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg border ${
@@ -249,7 +271,7 @@ const ChatComponent = () => {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                placeholder="Type your message..."
+                placeholder="Type your message or drop files to upload..."
                 className="w-full px-4 py-3 pr-20 bg-gray-700 border border-green-500/30 rounded-lg text-green-300 placeholder-green-500/50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
               />
               
